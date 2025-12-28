@@ -13,6 +13,9 @@ bot/vBot_4.8/vBot/main.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\main.lu
 bot/vBot_4.8/vBot/extras.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\extras.lua
 bot/vBot_4.8/vBot/equip.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\equip.lua
 
+# Launcher files
+MystoviaLauncher-Updater.bat|MystoviaLauncher-Updater.bat
+
 # Client modules
 client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviolation\ruleviolation.lua
 client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
