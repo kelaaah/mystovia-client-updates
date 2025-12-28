@@ -387,7 +387,7 @@ AttackBotPanel < Panel
     anchors.bottom: parent.bottom
     size: 40 19
     text-align: center
-    text: New
+    text: ADD
     font: cipsoftFont
 
   BotItem
