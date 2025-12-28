@@ -15,6 +15,7 @@ bot/vBot_4.8/vBot/equip.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\equip.
 
 # Launcher files
 MystoviaLauncher-Updater.bat|MystoviaLauncher-Updater.bat
+update-client.ps1|update-client.ps1
 
 # Client modules
 client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviolation\ruleviolation.lua
