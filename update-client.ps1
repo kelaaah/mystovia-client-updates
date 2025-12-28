@@ -88,6 +88,24 @@ if ($failed -gt 0) {
     Write-Host "Failed: $failed file(s)" -ForegroundColor Red
 }
 Write-Host "========================================" -ForegroundColor Green
+
+# Update version number in init.lua
+try {
+    $versionUrl = "$RepoUrl/version.txt"
+    $newVersion = (Invoke-WebRequest -Uri $versionUrl -UseBasicParsing -ErrorAction Stop).Content.Trim()
+
+    $initLuaPath = Join-Path $InstallPath "client\init.lua"
+    if (Test-Path $initLuaPath) {
+        $initContent = Get-Content $initLuaPath -Raw
+        $initContent = $initContent -replace 'APP_NAME = "mystovia".*', "APP_NAME = `"mystovia`"  -- client name`r`nAPP_VERSION = `"$newVersion`"       -- client version"
+        Set-Content $initLuaPath -Value $initContent -NoNewline
+        Write-Host "Version updated to $newVersion" -ForegroundColor Green
+    }
+}
+catch {
+    Write-Host "Could not update version number" -ForegroundColor Yellow
+}
+
 Write-Host ""
 Write-Host "Starting launcher..." -ForegroundColor Cyan
 
