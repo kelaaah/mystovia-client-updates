@@ -1,0 +1,20 @@
+# Mystovia Client Update Manifest
+# List files to update, one per line
+# Format: source_path_in_repo|destination_path
+# Use APPDATA\ prefix for files in AppData
+# Lines starting with # are comments
+
+# Bot files in AppData
+bot/vBot_4.8/vBot/AttackBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\AttackBot.lua
+bot/vBot_4.8/vBot/HealBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\HealBot.lua
+bot/vBot_4.8/_Loader.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\_Loader.lua
+bot/vBot_4.8/vBot/main.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\main.lua
+bot/vBot_4.8/vBot/extras.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\extras.lua
+bot/vBot_4.8/vBot/equip.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\equip.lua
+
+# Client modules
+client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviolation\ruleviolation.lua
+client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
+
+# Things folder (add your files here)
+# Example: client/things/860/somefile.dat|client\things\860\somefile.dat
