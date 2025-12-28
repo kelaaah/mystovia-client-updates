@@ -1,4 +1,4 @@
-# Mystovia Client Auto-Updater
+﻿# Mystovia Client Auto-Updater
 # This script downloads updated files from GitHub
 
 param(
