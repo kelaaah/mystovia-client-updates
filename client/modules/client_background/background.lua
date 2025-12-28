@@ -35,14 +35,8 @@ function init()
     addEvent(function() g_effects.fadeIn(clientVersionLabel, 1500) end)
   end
 
-  connect(g_game, { onGameStart = function()
-    fadeOutMusic()
-    hide()
-  end })
-  connect(g_game, { onGameEnd = function()
-    fadeInMusic()
-    show()
-  end })
+  connect(g_game, { onGameStart = hide })
+  connect(g_game, { onGameEnd = show })
 end
 
 function terminate()
@@ -73,54 +67,6 @@ end
 
 function getBackground()
   return background
-end
-
--- Fade out music when entering game
-function fadeOutMusic()
-  if g_sounds then
-    pcall(function()
-      local musicChannel = g_sounds.getChannel(SoundChannels.Music)
-      if musicChannel then
-        local currentGain = musicChannel:getGain()
-        if currentGain > 0 then
-          -- Gradual fade from current volume to 0 over 10 seconds
-          local delays = {
-            {time = 1000, gain = 0.5},
-            {time = 2000, gain = 0.4},
-            {time = 3000, gain = 0.3},
-            {time = 4000, gain = 0.2},
-            {time = 5000, gain = 0.1},
-            {time = 6000, gain = 0.08},
-            {time = 7000, gain = 0.06},
-            {time = 8000, gain = 0.04},
-            {time = 9000, gain = 0.02},
-            {time = 10000, gain = 0}
-          }
-
-          for _, step in ipairs(delays) do
-            scheduleEvent(function()
-              local chan = g_sounds.getChannel(SoundChannels.Music)
-              if chan then
-                chan:setGain(step.gain)
-              end
-            end, step.time)
-          end
-        end
-      end
-    end)
-  end
-end
-
--- Fade in music when returning to menu
-function fadeInMusic()
-  if g_sounds then
-    pcall(function()
-      local musicChannel = g_sounds.getChannel(SoundChannels.Music)
-      if musicChannel then
-        musicChannel:setGain(0.6)
-      end
-    end)
-  end
 end
 
 -- Toggle audio mute/unmute (only affects music, not bot alarms)

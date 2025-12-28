@@ -15,6 +15,33 @@ Write-Host ""
 Write-Host "  [*] Verificando actualizaciones disponibles" -ForegroundColor Yellow
 Write-Host ""
 
+# Check version to see if update is needed
+$versionUrl = "$RepoUrl/version.txt"
+$localVersionFile = Join-Path $InstallPath "version.txt"
+
+try {
+    $remoteVersion = (Invoke-WebRequest -Uri $versionUrl -UseBasicParsing -ErrorAction Stop).Content.Trim()
+
+    # Check local version
+    $localVersion = ""
+    if (Test-Path $localVersionFile) {
+        $localVersion = (Get-Content $localVersionFile -Raw).Trim()
+    }
+
+    # Compare versions
+    if ($localVersion -eq $remoteVersion -and $localVersion -ne "") {
+        Write-Host "  [v] Tu cliente esta actualizado! (v$localVersion)" -ForegroundColor Green
+        Write-Host "  [*] Iniciando cliente" -ForegroundColor Cyan
+        Start-Sleep -Seconds 2
+        exit 0
+    }
+
+    Write-Host "  [!] Nueva version disponible: v$remoteVersion" -ForegroundColor Yellow
+}
+catch {
+    Write-Host "  [!] No se pudo verificar la version remota" -ForegroundColor Yellow
+}
+
 # Download the update manifest (list of files to update)
 $manifestUrl = "$RepoUrl/update-manifest.txt"
 $tempManifest = "$env:TEMP\mystovia-manifest.txt"
@@ -93,10 +120,14 @@ if ($failed -gt 0) {
 }
 Write-Host ""
 
-# Update version number in init.lua
+# Update version number in init.lua and save version.txt locally
 try {
     $versionUrl = "$RepoUrl/version.txt"
     $newVersion = (Invoke-WebRequest -Uri $versionUrl -UseBasicParsing -ErrorAction Stop).Content.Trim()
+
+    # Save version.txt locally
+    $localVersionFile = Join-Path $InstallPath "version.txt"
+    $newVersion | Set-Content $localVersionFile
 
     $initLuaPath = Join-Path $InstallPath "client\init.lua"
     if (Test-Path $initLuaPath) {

@@ -356,40 +356,7 @@ function EnterGame.init()
     EnterGame.show()
   end, 100)
 
-  -- Reproducir música de fondo del login
-  if g_sounds then
-    pcall(function()
-      local musicChannel = g_sounds.getChannel(SoundChannels.Music)
-      if musicChannel then
-        -- Enable looping for menu music
-        musicChannel:enqueue('/sounds/menu_music.ogg', 3)
-
-        -- Schedule to re-enqueue music to create infinite loop
-        local function loopMusic()
-          if not g_game.isOnline() and musicChannel then
-            musicChannel:enqueue('/sounds/menu_music.ogg', 0)
-            scheduleEvent(loopMusic, 120000) -- Re-check every 2 minutes
-          end
-        end
-        scheduleEvent(loopMusic, 120000) -- Adjust timing based on music length
-      end
-    end)
-  end
-  -- force channels to 60% gain on Enter Game show so user hears reduced volume immediately
-  if g_sounds then
-    pcall(function()
-      local musicChannel = g_sounds.getChannel(SoundChannels.Music)
-      if musicChannel then
-        musicChannel:setEnabled(true)
-        musicChannel:setGain(0.6)
-      end
-      local botChannel = g_sounds.getChannel(SoundChannels.Bot)
-      if botChannel then
-        botChannel:setEnabled(true)
-        botChannel:setGain(0.6)
-      end
-    end)
-  end
+  -- No background music in launcher
 end
 
 function EnterGame.terminate()
