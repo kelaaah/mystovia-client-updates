@@ -96,9 +96,16 @@ try {
 
     $initLuaPath = Join-Path $InstallPath "client\init.lua"
     if (Test-Path $initLuaPath) {
-        $initContent = Get-Content $initLuaPath -Raw
-        $initContent = $initContent -replace 'APP_NAME = "mystovia".*', "APP_NAME = `"mystovia`"  -- client name`r`nAPP_VERSION = `"$newVersion`"       -- client version"
-        Set-Content $initLuaPath -Value $initContent -NoNewline
+        $initContent = Get-Content $initLuaPath
+        $newContent = @()
+        foreach ($line in $initContent) {
+            if ($line -match '^APP_VERSION\s*=') {
+                $newContent += "APP_VERSION = `"$newVersion`"       -- client version"
+            } else {
+                $newContent += $line
+            }
+        }
+        $newContent | Set-Content $initLuaPath
         Write-Host "Version updated to $newVersion" -ForegroundColor Green
     }
 }
