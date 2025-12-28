@@ -21,6 +21,8 @@ update-client.ps1|update-client.ps1
 # Client modules
 client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviolation\ruleviolation.lua
 client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
+client/modules/client_background/background.lua|client\modules\client_background\background.lua
+client/modules/client/client.lua|client\modules\client\client.lua
 client/init.lua|client\init.lua
 
 # Things folder (add your files here)
