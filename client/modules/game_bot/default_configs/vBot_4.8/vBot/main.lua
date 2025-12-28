@@ -22,6 +22,7 @@ if os.time() > storage.checkVersion + (12 * 60 * 60) then
 end
 
 UI.Label("vBot v".. version .." \n Vithrax#5814")
+UI.Label("Mystovia Client")
 UI.Button("Official OTCv8 Discord!", function() g_platform.openUrl("https://discord.gg/yhqBE4A") end)
 UI.Separator()
 
