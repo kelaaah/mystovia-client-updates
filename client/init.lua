@@ -1,6 +1,6 @@
 -- CONFIG
-APP_NAME = "mystovia"  -- important, change it, it's name for config dir and files in appdata
-APP_VERSION = 100       -- client version for updater and login to identify outdated client
+APP_NAME = "mystovia"  -- client name
+APP_VERSION = "1.0.1"       -- client version
 DEFAULT_LAYOUT = "retro" -- on android it's forced to "mobile", check code bellow
 
 -- If you don't use updater or other service, set it to updater = ""

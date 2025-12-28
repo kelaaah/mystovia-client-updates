@@ -20,6 +20,7 @@ update-client.ps1|update-client.ps1
 # Client modules
 client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviolation\ruleviolation.lua
 client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
+client/init.lua|client\init.lua
 
 # Things folder (add your files here)
 # Example: client/things/860/somefile.dat|client\things\860\somefile.dat
