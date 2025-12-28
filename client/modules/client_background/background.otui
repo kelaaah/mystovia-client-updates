@@ -1,0 +1,67 @@
+UIWidget
+  id: background
+  anchors.fill: parent
+  focusable: false
+  image-source: /images/background
+  image-smooth: true
+  image-fixed-ratio: true
+  margin-top: 1
+
+  // Botones pequeños en la esquina superior derecha
+  Panel
+    id: topRightButtonsPanel
+    anchors.top: parent.top
+    anchors.right: parent.right
+    margin-top: 2
+    margin-right: 2
+    height: 20
+    layout:
+      type: horizontalBox
+      spacing: 2
+      fit-children: true
+
+    UIButton
+      id: miniOptionsButton
+      size: 20 20
+      image-source: /layouts/retro/images/topbuttons/options
+      image-clip: 0 0 20 20
+      tooltip: Options
+      @onClick: modules.client_options.toggle()
+
+    UIButton
+      id: miniAudioButton
+      size: 20 20
+      image-source: /layouts/retro/images/topbuttons/audio
+      image-clip: 0 0 20 20
+      tooltip: Toggle Audio
+      @onClick: modules.client_background.toggleAudio()
+
+    UIButton
+      id: miniInfoButton
+      size: 20 20
+      image-source: /layouts/retro/images/topbuttons/debug
+      image-clip: 0 0 20 20
+      tooltip: Debug Info
+      @onClick: if modules.client_stats then modules.client_stats.toggle() end
+
+    UIButton
+      id: miniTerminalButton
+      size: 20 20
+      image-source: /layouts/retro/images/topbuttons/terminal
+      image-clip: 0 0 20 20
+      tooltip: Terminal
+      @onClick: if modules.client_terminal then modules.client_terminal.toggle() end
+
+  UILabel
+    id: clientVersionLabel
+    background-color: #00000099
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    text-align: center
+    text-auto-resize: false
+    width: 220
+    height: 90
+    padding: 2
+    color: #ffffff
+    font: terminus-14px-bold
+    visible: false
