@@ -6,12 +6,21 @@ param(
     [string]$InstallPath = "$env:ProgramFiles\Mystovia"
 )
 
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "   Mystovia Client Updater v2.0" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
+Clear-Host
 Write-Host ""
-Write-Host "*** SISTEMA DE ACTUALIZACION AUTOMATICA ACTIVO ***" -ForegroundColor Green
-Write-Host "Checking for updates..." -ForegroundColor Yellow
+Write-Host "          ███╗   ███╗██╗   ██╗███████╗████████╗ ██████╗ ██╗   ██╗██╗ █████╗ " -ForegroundColor Cyan
+Write-Host "          ████╗ ████║╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔═══██╗██║   ██║██║██╔══██╗" -ForegroundColor Cyan
+Write-Host "          ██╔████╔██║ ╚████╔╝ ███████╗   ██║   ██║   ██║██║   ██║██║███████║" -ForegroundColor Cyan
+Write-Host "          ██║╚██╔╝██║  ╚██╔╝  ╚════██║   ██║   ██║   ██║╚██╗ ██╔╝██║██╔══██║" -ForegroundColor Cyan
+Write-Host "          ██║ ╚═╝ ██║   ██║   ███████║   ██║   ╚██████╔╝ ╚████╔╝ ██║██║  ██║" -ForegroundColor Cyan
+Write-Host "          ╚═╝     ╚═╝   ╚═╝   ╚══════╝   ╚═╝    ╚═════╝   ╚═══╝  ╚═╝╚═╝  ╚═╝" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  ═══════════════════════════════════════════════════════════════════" -ForegroundColor DarkCyan
+Write-Host "             ACTUALIZADOR OFICIAL - MYSTOVIA CLIENT" -ForegroundColor White
+Write-Host "  ═══════════════════════════════════════════════════════════════════" -ForegroundColor DarkCyan
+Write-Host ""
+Write-Host "  [*] Verificando actualizaciones disponibles..." -ForegroundColor Yellow
+Write-Host ""
 
 # Download the update manifest (list of files to update)
 $manifestUrl = "$RepoUrl/update-manifest.txt"
@@ -22,18 +31,21 @@ try {
     $filesToUpdate = Get-Content $tempManifest | Where-Object { $_ -match '\S' -and $_ -notmatch '^#' }
 }
 catch {
-    Write-Host "Could not check for updates. Continuing with launcher..." -ForegroundColor Yellow
+    Write-Host "  [!] No se pudo verificar actualizaciones." -ForegroundColor Yellow
+    Write-Host "  [*] Iniciando cliente..." -ForegroundColor Cyan
     Start-Sleep -Seconds 2
     exit 0
 }
 
 if ($filesToUpdate.Count -eq 0) {
-    Write-Host "No updates available." -ForegroundColor Green
-    Start-Sleep -Seconds 1
+    Write-Host "  [✓] Tu cliente esta actualizado!" -ForegroundColor Green
+    Write-Host "  [*] Iniciando cliente..." -ForegroundColor Cyan
+    Start-Sleep -Seconds 2
     exit 0
 }
 
-Write-Host "Found $($filesToUpdate.Count) file(s) to update" -ForegroundColor Cyan
+Write-Host "  [✓] Se encontraron $($filesToUpdate.Count) actualizaciones disponibles" -ForegroundColor Green
+Write-Host "  [*] Descargando archivos..." -ForegroundColor Cyan
 Write-Host ""
 
 $updated = 0
@@ -69,25 +81,26 @@ foreach ($file in $filesToUpdate) {
     }
 
     try {
-        Write-Host "[Updating] $destPath" -ForegroundColor Gray
+        Write-Host "  [↓] $destPath" -ForegroundColor Gray
         Invoke-WebRequest -Uri $url -OutFile $destination -UseBasicParsing -ErrorAction Stop
         $updated++
     }
     catch {
-        Write-Host "  [FAILED] $destPath" -ForegroundColor Red
-        Write-Host "  Error: $_" -ForegroundColor DarkRed
+        Write-Host "  [✗] Error: $destPath" -ForegroundColor Red
         $failed++
     }
 }
 
 Write-Host ""
-Write-Host "========================================" -ForegroundColor Green
-Write-Host "Update complete!" -ForegroundColor Green
-Write-Host "Updated: $updated file(s)" -ForegroundColor Green
+Write-Host "  ═══════════════════════════════════════════════════════════════════" -ForegroundColor Green
+Write-Host "                   ACTUALIZACION COMPLETADA!" -ForegroundColor Green
+Write-Host "  ═══════════════════════════════════════════════════════════════════" -ForegroundColor Green
+Write-Host ""
+Write-Host "  [✓] Archivos actualizados: $updated" -ForegroundColor Green
 if ($failed -gt 0) {
-    Write-Host "Failed: $failed file(s)" -ForegroundColor Red
+    Write-Host "  [✗] Archivos con error: $failed" -ForegroundColor Red
 }
-Write-Host "========================================" -ForegroundColor Green
+Write-Host ""
 
 # Update version number in init.lua
 try {
@@ -113,8 +126,9 @@ catch {
     Write-Host "Could not update version number" -ForegroundColor Yellow
 }
 
+Write-Host "  [*] Iniciando Mystovia Client..." -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Starting launcher..." -ForegroundColor Cyan
+Write-Host "  Presiona cualquier tecla para continuar..." -ForegroundColor DarkGray
 
 # Wait a moment before continuing
-Start-Sleep -Seconds 2
+Start-Sleep -Seconds 3
