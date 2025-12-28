@@ -7,6 +7,7 @@
 # Bot files in AppData
 bot/vBot_4.8/vBot/AttackBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\AttackBot.lua
 bot/vBot_4.8/vBot/HealBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\HealBot.lua
+bot/vBot_4.8/vBot/eat_food.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\eat_food.lua
 bot/vBot_4.8/_Loader.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\_Loader.lua
 bot/vBot_4.8/vBot/main.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\main.lua
 bot/vBot_4.8/vBot/extras.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\extras.lua
