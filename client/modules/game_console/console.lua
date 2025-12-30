@@ -1479,6 +1479,13 @@ function online()
     local gameRootPanel = modules.game_interface.getRootPanel()
     g_keyboard.bindKeyDown('Ctrl+R', openPlayerReportRuleViolationWindow, gameRootPanel)
   end
+  -- Auto-open Help channel
+  scheduleEvent(function()
+    if not table.find(channels, 9) then
+      g_game.joinChannel(9)
+    end
+  end, 2000)
+
   -- open last channels
   local lastChannelsOpen = g_settings.getNode('lastChannelsOpen')
   if lastChannelsOpen then

@@ -22,6 +22,7 @@ update-client.ps1|update-client.ps1
 client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviolation\ruleviolation.lua
 client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
 client/modules/game_bot/default_configs/vBot_4.8/vBot/main.lua|client\modules\game_bot\default_configs\vBot_4.8\vBot\main.lua
+client/modules/game_console/console.lua|client\modules\game_console\console.lua
 client/modules/client_background/background.lua|client\modules\client_background\background.lua
 client/modules/client_entergame/entergame.lua|client\modules\client_entergame\entergame.lua
 client/modules/client/client.lua|client\modules\client\client.lua
