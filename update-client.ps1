@@ -102,11 +102,15 @@ foreach ($file in $filesToUpdate) {
 
     try {
         Write-Host "  [->] $destPath" -ForegroundColor Gray
+        # Delete existing file if it exists to ensure clean overwrite
+        if (Test-Path $destination) {
+            Remove-Item $destination -Force
+        }
         Invoke-WebRequest -Uri $url -OutFile $destination -UseBasicParsing -ErrorAction Stop
         $updated++
     }
     catch {
-        Write-Host "  [X] Error: $destPath" -ForegroundColor Red
+        Write-Host "  [X] Error: $destPath - $_" -ForegroundColor Red
         $failed++
     }
 }
