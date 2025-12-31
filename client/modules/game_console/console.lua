@@ -77,6 +77,7 @@ currentMessageIndex = 0
 ignoreNpcMessages = false
 defaultTab = nil
 serverTab = nil
+helpTab = nil
 violationsChannelId = nil
 violationWindow = nil
 violationReportTab = nil
@@ -323,7 +324,7 @@ function load()
 end
 
 function onTabChange(tabBar, tab)
-  if tab == defaultTab or tab == serverTab then
+  if tab == defaultTab or tab == serverTab or tab == helpTab then
     consolePanel:getChildById('closeChannelButton'):disable()
   else
     consolePanel:getChildById('closeChannelButton'):enable()
@@ -360,6 +361,8 @@ function clear()
   defaultTab = nil
   consoleTabBar:removeTab(serverTab)
   serverTab = nil
+  consoleTabBar:removeTab(helpTab)
+  helpTab = nil
 
   local npcTab = consoleTabBar:getTab('NPCs')
   if npcTab then
@@ -466,7 +469,7 @@ function removeTab(tab)
     tab = consoleTabBar:getTab(tab)
   end
 
-  if tab == defaultTab or tab == serverTab then
+  if tab == defaultTab or tab == serverTab or tab == helpTab then
     return
   end
 
@@ -758,7 +761,7 @@ function processChannelTabMenu(tab, mousePos, mouseButton)
   local worldName = g_game.getWorldName()
   local characterName = g_game.getCharacterName()
   channelName = tab:getText()
-  if tab ~= defaultTab and tab ~= serverTab then
+  if tab ~= defaultTab and tab ~= serverTab and tab ~= helpTab then
     menu:addOption(tr('Close'), function() removeTab(channelName) end)
     --menu:addOption(tr('Show Server Messages'), function() --[[TODO]] end)
     menu:addSeparator()
@@ -1136,7 +1139,13 @@ function onTalk(name, level, mode, message, channelId, creaturePos)
 end
 
 function onOpenChannel(channelId, channelName)
-  addChannel(channelName, channelId)
+  if channelId == 9 and helpTab then
+    -- Use the pre-created Help tab for channel 9
+    channels[channelId] = channelName
+    helpTab.channelId = channelId
+  else
+    addChannel(channelName, channelId)
+  end
 end
 
 function onOpenPrivateChannel(receiver)
@@ -1468,23 +1477,38 @@ end
 function online()
   defaultTab = addTab(tr('Default'), true)
   serverTab = addTab(tr('Server Log'), false)
+  helpTab = addTab(tr('Help'), false)
 
 
   if g_game.getClientVersion() >= 820 then
     local tab = addTab("NPCs", false)
     tab.npcChat = true
   end
-  
+
   if g_game.getClientVersion() < 862 then
     local gameRootPanel = modules.game_interface.getRootPanel()
     g_keyboard.bindKeyDown('Ctrl+R', openPlayerReportRuleViolationWindow, gameRootPanel)
   end
-  -- Auto-open Help channel
+
+  -- Auto-join Help channel (ID 9) and link it to the Help tab
   scheduleEvent(function()
-    if not table.find(channels, 9) then
+    if g_game.isOnline() and not table.find(channels, 9) then
       g_game.joinChannel(9)
     end
   end, 2000)
+
+  -- Auto-open main backpack (slot 3)
+  scheduleEvent(function()
+    if g_game.isOnline() then
+      local player = g_game.getLocalPlayer()
+      if player then
+        local backpack = player:getInventoryItem(3)
+        if backpack and backpack:isContainer() then
+          g_game.open(backpack)
+        end
+      end
+    end
+  end, 3000)
 
   -- open last channels
   local lastChannelsOpen = g_settings.getNode('lastChannelsOpen')
@@ -1504,6 +1528,47 @@ function online()
   end
   scheduleEvent(function() consoleTabBar:selectTab(defaultTab) end, 500)
   scheduleEvent(function() ignoredChannels = {} end, 3000)
+
+  -- Auto-attack Training Monk
+  autoAttackEvent = cycleEvent(function()
+    if g_game.isOnline() then
+      local player = g_game.getLocalPlayer()
+      if player then
+        local playerPos = player:getPosition()
+        local attackTarget = g_game.getAttackingCreature()
+
+        -- Check if we're attacking a Training Monk that's too far
+        if attackTarget and attackTarget:isMonster() then
+          local targetName = attackTarget:getName():lower()
+          if targetName:find("training monk") then
+            local targetPos = attackTarget:getPosition()
+            local distance = math.max(math.abs(playerPos.x - targetPos.x), math.abs(playerPos.y - targetPos.y))
+            if distance > 1 then
+              g_game.cancelAttack()
+            end
+          end
+        end
+
+        -- Attack nearby Training Monk if not attacking
+        if not g_game.isAttacking() then
+          local spectators = g_map.getSpectators(playerPos, false)
+          for _, creature in ipairs(spectators) do
+            if creature:isMonster() then
+              local creatureName = creature:getName():lower()
+              if creatureName:find("training monk") then
+                local creaturePos = creature:getPosition()
+                local distance = math.max(math.abs(playerPos.x - creaturePos.x), math.abs(playerPos.y - creaturePos.y))
+                if distance == 1 then
+                  g_game.attack(creature)
+                  break
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end, 500)
 end
 
 function offline()
@@ -1511,6 +1576,13 @@ function offline()
     local gameRootPanel = modules.game_interface.getRootPanel()
     g_keyboard.unbindKeyDown('Ctrl+R', gameRootPanel)
   end
+
+  -- Stop auto-attack event
+  if autoAttackEvent then
+    removeEvent(autoAttackEvent)
+    autoAttackEvent = nil
+  end
+
   clear()
 end
 
