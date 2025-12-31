@@ -9,7 +9,7 @@ function translateNetworkError(errcode, connecting, errdesc)
   elseif connecting then
     text = tr('Connection failed.')
   else
-    text = tr('Connection rejected.\nOnly 2 characters per IP')
+    text = tr('Connection rejected.\nOnly 3 characters per IP')
   end
   text = text .. ' ' .. tr('(ERROR %d)', errcode)
   return text
