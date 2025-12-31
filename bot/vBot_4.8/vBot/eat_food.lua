@@ -7,7 +7,7 @@ if voc() ~= 1 and voc() ~= 11 then
                 table.insert(t, v.id)
             end
         end
-        local foodItems = { 3607, 3585, 3592, 3600, 3601 }
+        local foodItems = { 3607, 3725, 11887, 3600, 3601 }
         for i, item in pairs(foodItems) do
             if not table.find(t, item) then
                 table.insert(storage.foodItems, item)
