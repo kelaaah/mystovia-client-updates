@@ -83,6 +83,7 @@ violationWindow = nil
 violationReportTab = nil
 ignoredChannels = {}
 filters = {}
+lastSpellSent = nil
 
 floatingMode = false
 
@@ -945,6 +946,53 @@ function sendMessage(message, tab)
     if #messageHistory > MAX_HISTORY then
       table.remove(messageHistory, 1)
     end
+  end
+
+  -- Check if message is a spell - if so, always send to default channel
+  local isSpell = false
+  local lowerMessage = message:lower():trim()
+
+  -- Check against known spell list
+  if SpellInfo and SpellInfo['Default'] then
+    for spellName, spellData in pairs(SpellInfo['Default']) do
+      local words = spellData.words
+      if words then
+        -- Check if message starts with spell words
+        if lowerMessage == words or lowerMessage:find("^" .. words .. " ") then
+          isSpell = true
+          break
+        end
+      end
+    end
+  end
+
+  -- Also check if message starts with common spell prefixes (for custom/unknown spells)
+  if not isSpell then
+    local spellPrefixes = {
+      "^exura ", "^exana ", "^exani ", "^exeta ", "^exevo ", "^exori ", "^exiva ",
+      "^utamo ", "^utani ", "^utevo ", "^utori ", "^utura ",
+      "^adori ", "^adevo ", "^adeta ", "^adura ",
+      "^exura$", "^exana$", "^exani$", "^exeta$", "^exevo$", "^exori$", "^exiva$",
+      "^utamo$", "^utani$", "^utevo$", "^utori$", "^utura$",
+      "^adori$", "^adevo$", "^adeta$", "^adura$"
+    }
+
+    for _, prefix in ipairs(spellPrefixes) do
+      if lowerMessage:find(prefix) then
+        isSpell = true
+        break
+      end
+    end
+  end
+
+  -- If it's a spell, send it as default talk (not to channel)
+  if isSpell then
+    local player = g_game.getLocalPlayer()
+    g_game.talk(message)
+    -- Add the spell text to default tab only
+    local formattedMessage = applyMessagePrefixies(g_game.getCharacterName(), player:getLevel(), message)
+    addTabText(formattedMessage, SpeakTypesSettings.say, defaultTab, g_game.getCharacterName())
+    return
   end
 
   local speaktypedesc
