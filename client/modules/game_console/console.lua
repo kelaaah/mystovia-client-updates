@@ -1577,7 +1577,7 @@ function online()
   scheduleEvent(function() consoleTabBar:selectTab(defaultTab) end, 500)
   scheduleEvent(function() ignoredChannels = {} end, 3000)
 
-  -- Auto-attack Training Monk
+  -- Auto-attack Training Monk and auto-cancel attack when target is off-screen
   autoAttackEvent = cycleEvent(function()
     if g_game.isOnline() then
       local player = g_game.getLocalPlayer()
@@ -1585,14 +1585,31 @@ function online()
         local playerPos = player:getPosition()
         local attackTarget = g_game.getAttackingCreature()
 
-        -- Check if we're attacking a Training Monk that's too far
-        if attackTarget and attackTarget:isMonster() then
-          local targetName = attackTarget:getName():lower()
-          if targetName:find("training monk") then
-            local targetPos = attackTarget:getPosition()
-            local distance = math.max(math.abs(playerPos.x - targetPos.x), math.abs(playerPos.y - targetPos.y))
-            if distance > 1 then
-              g_game.cancelAttack()
+        -- Check if we're attacking something
+        if attackTarget then
+          local spectators = g_map.getSpectators(playerPos, false)
+          local targetVisible = false
+
+          -- Check if target is still visible on screen
+          for _, creature in ipairs(spectators) do
+            if creature:getId() == attackTarget:getId() then
+              targetVisible = true
+              break
+            end
+          end
+
+          -- Cancel attack if target is not visible (off-screen)
+          if not targetVisible then
+            g_game.cancelAttack()
+          elseif attackTarget:isMonster() then
+            -- Additional check for Training Monk distance
+            local targetName = attackTarget:getName():lower()
+            if targetName:find("training monk") then
+              local targetPos = attackTarget:getPosition()
+              local distance = math.max(math.abs(playerPos.x - targetPos.x), math.abs(playerPos.y - targetPos.y))
+              if distance > 1 then
+                g_game.cancelAttack()
+              end
             end
           end
         end
