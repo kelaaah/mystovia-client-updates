@@ -4,8 +4,8 @@
 
 cd /d "%~dp0"
 
-:: Run updater script with admin privileges
-powershell.exe -ExecutionPolicy Bypass -Command "Start-Process powershell -ArgumentList '-ExecutionPolicy Bypass -File \"%~dp0update-client.ps1\"' -Verb RunAs -Wait"
+:: Run updater script
+powershell.exe -ExecutionPolicy Bypass -NoProfile -File "%~dp0update-client.ps1"
 
 :: Launch the actual launcher
 start "" "%~dp0MystoviaLauncher.exe"
