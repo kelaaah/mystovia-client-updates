@@ -1,8 +1,8 @@
-﻿# Mystovia Client Auto-Updater
+# Mystovia Client Auto-Updater
 # This script downloads updated files from GitHub
 
 param(
-[string]$RepoUrl = "https://raw.githubusercontent.com/kelaaah/mystovia-client-updates/main",
+    [string]$RepoUrl = "https://raw.githubusercontent.com/kelaaah/mystovia-client-updates/main",
     [string]$InstallPath = "$env:ProgramFiles\Mystovia"
 )
 
@@ -114,7 +114,7 @@ foreach ($file in $filesToUpdate) {
         $updated++
     }
     catch {
-        Write-Host "  [X] Error: $destPath - $_" -ForegroundColor Red
+        Write-Host "  [X] Error: $destPath" -ForegroundColor Red
         $failed++
     }
 }
