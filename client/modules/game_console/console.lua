@@ -1606,9 +1606,11 @@ function online()
             local targetName = attackTarget:getName():lower()
             if targetName:find("training monk") then
               local targetPos = attackTarget:getPosition()
-              local distance = math.max(math.abs(playerPos.x - targetPos.x), math.abs(playerPos.y - targetPos.y))
-              if distance > 1 then
-                g_game.cancelAttack()
+              if targetPos then
+                local distance = math.max(math.abs(playerPos.x - targetPos.x), math.abs(playerPos.y - targetPos.y))
+                if distance > 1 then
+                  g_game.cancelAttack()
+                end
               end
             end
           end
@@ -1622,10 +1624,12 @@ function online()
               local creatureName = creature:getName():lower()
               if creatureName:find("training monk") then
                 local creaturePos = creature:getPosition()
-                local distance = math.max(math.abs(playerPos.x - creaturePos.x), math.abs(playerPos.y - creaturePos.y))
-                if distance == 1 then
-                  g_game.attack(creature)
-                  break
+                if creaturePos then
+                  local distance = math.max(math.abs(playerPos.x - creaturePos.x), math.abs(playerPos.y - creaturePos.y))
+                  if distance == 1 then
+                    g_game.attack(creature)
+                    break
+                  end
                 end
               end
             end

@@ -23,6 +23,7 @@ client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviol
 client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
 client/modules/corelib/ui/uispinbox.lua|client\modules\corelib\ui\uispinbox.lua
 client/modules/gamelib/ui/uiitem.lua|client\modules\gamelib\ui\uiitem.lua
+client/modules/game_console/console.lua|client\modules\game_console\console.lua
 client/init.lua|client\init.lua
 
 # Things folder (add your files here)
