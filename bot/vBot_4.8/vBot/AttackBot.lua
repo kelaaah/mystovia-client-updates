@@ -585,9 +585,45 @@ if not AttackBotConfig[panelName] or not AttackBotConfig[panelName][1] or #Attac
   }
 end
   
-if not AttackBotConfig.currentBotProfile or AttackBotConfig.currentBotProfile == 0 or AttackBotConfig.currentBotProfile > 5 then 
+-- Character-specific profile storage
+if not AttackBotConfig.characterProfiles then
+  AttackBotConfig.characterProfiles = {}
+end
+
+-- Load profile for current character or default to 1
+local function loadCharacterProfile()
+  local player = g_game.getLocalPlayer()
+  if player then
+    local charName = player:getName()
+    if AttackBotConfig.characterProfiles[charName] then
+      AttackBotConfig.currentBotProfile = AttackBotConfig.characterProfiles[charName]
+    end
+  end
+end
+
+-- Save profile for current character
+local function saveCharacterProfile()
+  local player = g_game.getLocalPlayer()
+  if player then
+    local charName = player:getName()
+    AttackBotConfig.characterProfiles[charName] = AttackBotConfig.currentBotProfile
+    vBotConfigSave("atk")
+  end
+end
+
+if not AttackBotConfig.currentBotProfile or AttackBotConfig.currentBotProfile == 0 or AttackBotConfig.currentBotProfile > 5 then
   AttackBotConfig.currentBotProfile = 1
 end
+
+-- Load character-specific profile on login
+onAddEvent(function()
+  loadCharacterProfile()
+  if ui and ui[AttackBotConfig.currentBotProfile] then
+    setActiveProfile()
+    activeProfileColor()
+    loadSettings()
+  end
+end, 500)
 
 -- create panel UI
 ui = UI.createWidget("AttackBotBotPanel")
@@ -996,7 +1032,7 @@ end
     activeProfileColor()
     loadSettings()
     resetFields()
-    vBotConfigSave("atk")
+    saveCharacterProfile() -- Save profile for current character
   end
 
   for i=1,5 do

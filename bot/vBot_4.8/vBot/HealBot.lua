@@ -146,9 +146,44 @@ if not HealBotConfig[healPanelName] or not HealBotConfig[healPanelName][1] or #H
   }
 end
 
-if not HealBotConfig.currentHealBotProfile or HealBotConfig.currentHealBotProfile == 0 or HealBotConfig.currentHealBotProfile > 5 then 
+-- Character-specific profile storage
+if not HealBotConfig.characterProfiles then
+  HealBotConfig.characterProfiles = {}
+end
+
+-- Load profile for current character or default to 1
+local function loadCharacterProfile()
+  local player = g_game.getLocalPlayer()
+  if player then
+    local charName = player:getName()
+    if HealBotConfig.characterProfiles[charName] then
+      HealBotConfig.currentHealBotProfile = HealBotConfig.characterProfiles[charName]
+    end
+  end
+end
+
+-- Save profile for current character
+local function saveCharacterProfile()
+  local player = g_game.getLocalPlayer()
+  if player then
+    local charName = player:getName()
+    HealBotConfig.characterProfiles[charName] = HealBotConfig.currentHealBotProfile
+    vBotConfigSave("heal")
+  end
+end
+
+if not HealBotConfig.currentHealBotProfile or HealBotConfig.currentHealBotProfile == 0 or HealBotConfig.currentHealBotProfile > 5 then
   HealBotConfig.currentHealBotProfile = 1
 end
+
+-- Load character-specific profile on login
+onAddEvent(function()
+  loadCharacterProfile()
+  if ui and ui[HealBotConfig.currentHealBotProfile] then
+    setActiveProfile()
+    activeProfileColor()
+  end
+end, 500)
 
 -- finding correct table, manual unfortunately
 local currentSettings
@@ -468,7 +503,7 @@ if rootWidget then
     setActiveProfile()
     activeProfileColor()
     loadSettings()
-    vBotConfigSave("heal")
+    saveCharacterProfile() -- Save profile for current character
   end
 
   local resetSettings = function()

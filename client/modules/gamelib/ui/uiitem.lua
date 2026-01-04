@@ -24,7 +24,7 @@ function UIItem:onDrop(widget, mousePos, forced)
 
   local item = widget.currentDragThing
   if not item or not item:isItem() then return false end
-  
+
   if self.selectable then
     if item:isPickupable() then
       self:setItem(Item.create(item:getId(), item:getCountOrSubType()))
@@ -37,6 +37,29 @@ function UIItem:onDrop(widget, mousePos, forced)
 
   local itemPos = item:getPosition()
   if itemPos.x == toPos.x and itemPos.y == toPos.y and itemPos.z == toPos.z then return false end
+
+  -- Auto-stack: redirect to existing stack if item is stackable
+  if item:isStackable() and toPos.x == 65535 and toPos.y >= 64 then
+    local containers = g_game.getContainers()
+    for _, container in pairs(containers) do
+      -- Check if this is the target container by comparing slot positions
+      local containerSlotPos = container:getSlotPosition(0)
+      if containerSlotPos.x == 65535 and
+         containerSlotPos.y == toPos.y and
+         not container.lootContainer then
+
+        local items = container:getItems()
+        for i, targetItem in ipairs(items) do
+          if targetItem:getId() == item:getId() and targetItem:getCount() < 100 then
+            -- Found existing stack with space, redirect to it
+            toPos = container:getSlotPosition(i - 1)
+            break
+          end
+        end
+        break
+      end
+    end
+  end
 
   if item:getCount() > 1 then
     modules.game_interface.moveStackableItem(item, toPos)

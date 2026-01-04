@@ -6,9 +6,9 @@
 
 # Bot files in AppData
 bot/vBot_4.8/vBot/AttackBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\AttackBot.lua
-bot/vBot_4.8/vBot/AttackBot.otui|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\AttackBot.otui
 bot/vBot_4.8/vBot/HealBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\HealBot.lua
 bot/vBot_4.8/vBot/eat_food.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\eat_food.lua
+bot/vBot_4.8/vBot/hold_target.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\hold_target.lua
 bot/vBot_4.8/_Loader.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\_Loader.lua
 bot/vBot_4.8/vBot/main.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\main.lua
 bot/vBot_4.8/vBot/extras.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\extras.lua
@@ -18,16 +18,11 @@ bot/vBot_4.8/vBot/equip.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\equip.
 MystoviaLauncher-Updater.bat|MystoviaLauncher-Updater.bat
 update-client.ps1|update-client.ps1
 
-# Client modules
+# Client modules (Program Files)
 client/modules/game_ruleviolation/ruleviolation.lua|client\modules\game_ruleviolation\ruleviolation.lua
 client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
-client/modules/game_bot/default_configs/vBot_4.8/vBot/main.lua|client\modules\game_bot\default_configs\vBot_4.8\vBot\main.lua
-client/modules/game_console/console.lua|client\modules\game_console\console.lua
-client/modules/game_containers/containers.lua|client\modules\game_containers\containers.lua
-client/modules/corelib/net.lua|client\modules\corelib\net.lua
-client/modules/client_background/background.lua|client\modules\client_background\background.lua
-client/modules/client_entergame/entergame.lua|client\modules\client_entergame\entergame.lua
-client/modules/client/client.lua|client\modules\client\client.lua
+client/modules/corelib/ui/uispinbox.lua|client\modules\corelib\ui\uispinbox.lua
+client/modules/gamelib/ui/uiitem.lua|client\modules\gamelib\ui\uiitem.lua
 client/init.lua|client\init.lua
 
 # Things folder (add your files here)
