@@ -33,7 +33,7 @@ try {
         Write-Host "  [v] Tu cliente esta actualizado! (v$localVersion)" -ForegroundColor Green
         Write-Host "  [*] Iniciando cliente" -ForegroundColor Cyan
         Start-Sleep -Seconds 2
-        exit 0
+        exit
     }
 
     Write-Host "  [!] Nueva version disponible: v$remoteVersion" -ForegroundColor Yellow
@@ -54,14 +54,14 @@ catch {
     Write-Host "  [!] No se pudo verificar actualizaciones" -ForegroundColor Yellow
     Write-Host "  [*] Iniciando cliente" -ForegroundColor Cyan
     Start-Sleep -Seconds 2
-    exit 0
+    exit
 }
 
 if ($filesToUpdate.Count -eq 0) {
     Write-Host "  [v] Tu cliente esta actualizado!" -ForegroundColor Green
     Write-Host "  [*] Iniciando cliente" -ForegroundColor Cyan
     Start-Sleep -Seconds 2
-    exit 0
+    exit
 }
 
 Write-Host "  [v] Se encontraron $($filesToUpdate.Count) actualizaciones disponibles" -ForegroundColor Green
