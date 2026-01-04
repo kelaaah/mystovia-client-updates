@@ -117,15 +117,23 @@ foreach ($file in $filesToUpdate) {
         $tempFile = "$env:TEMP\mystovia-download-$(Get-Random).tmp"
         Invoke-WebRequest -Uri $url -OutFile $tempFile -UseBasicParsing -ErrorAction Stop
 
-        # Force copy from temp to destination (this overwrites better than direct download)
-        Copy-Item $tempFile $destination -Force
-        Remove-Item $tempFile -Force
+        # Remove existing file if it exists
+        if (Test-Path $destination) {
+            Remove-Item $destination -Force -ErrorAction SilentlyContinue
+        }
+
+        # Move temp file to destination
+        Move-Item $tempFile $destination -Force
 
         $updated++
     }
     catch {
         Write-Host "  [X] Error: $destPath" -ForegroundColor Red
         $failed++
+        # Clean up temp file if it exists
+        if (Test-Path $tempFile) {
+            Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
+        }
     }
 }
 
