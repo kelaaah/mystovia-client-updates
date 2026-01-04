@@ -6,7 +6,34 @@ param(
     [string]$InstallPath = "$env:ProgramFiles\Mystovia"
 )
 
-# Check if running as administrator
+# STEP 1: First update this script itself (without admin)
+$scriptUrl = "$RepoUrl/update-client.ps1"
+$scriptPath = $PSCommandPath
+$tempScriptPath = "$env:TEMP\update-client-new.ps1"
+
+try {
+    $currentScript = Get-Content $scriptPath -Raw
+    $remoteScript = (Invoke-WebRequest -Uri $scriptUrl -UseBasicParsing -ErrorAction Stop).Content
+
+    if ($currentScript -ne $remoteScript) {
+        # Download new version
+        $remoteScript | Set-Content $tempScriptPath -Force
+
+        # Replace current script and restart
+        Copy-Item $tempScriptPath $scriptPath -Force
+        Remove-Item $tempScriptPath -Force -ErrorAction SilentlyContinue
+
+        # Restart with the new version
+        $arguments = "-ExecutionPolicy Bypass -NoProfile -File `"$scriptPath`""
+        Start-Process powershell.exe -ArgumentList $arguments -Wait
+        exit
+    }
+}
+catch {
+    # If update check fails, continue with current version
+}
+
+# STEP 2: Now check if running as administrator
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 if (-not $isAdmin) {
