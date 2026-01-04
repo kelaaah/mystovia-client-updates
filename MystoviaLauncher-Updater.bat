@@ -4,7 +4,15 @@
 
 cd /d "%~dp0"
 
-:: Run updater script
+:: Check for admin rights and request if needed
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    :: Not running as admin, restart with admin rights
+    powershell.exe -Command "Start-Process '%~f0' -Verb RunAs"
+    exit /b
+)
+
+:: Run updater script with admin rights
 powershell.exe -ExecutionPolicy Bypass -NoProfile -File "%~dp0update-client.ps1"
 
 :: Launch the actual launcher
