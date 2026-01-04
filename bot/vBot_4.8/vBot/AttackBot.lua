@@ -585,45 +585,9 @@ if not AttackBotConfig[panelName] or not AttackBotConfig[panelName][1] or #Attac
   }
 end
   
--- Character-specific profile storage
-if not AttackBotConfig.characterProfiles then
-  AttackBotConfig.characterProfiles = {}
-end
-
--- Load profile for current character or default to 1
-local function loadCharacterProfile()
-  local player = g_game.getLocalPlayer()
-  if player then
-    local charName = player:getName()
-    if AttackBotConfig.characterProfiles[charName] then
-      AttackBotConfig.currentBotProfile = AttackBotConfig.characterProfiles[charName]
-    end
-  end
-end
-
--- Save profile for current character
-local function saveCharacterProfile()
-  local player = g_game.getLocalPlayer()
-  if player then
-    local charName = player:getName()
-    AttackBotConfig.characterProfiles[charName] = AttackBotConfig.currentBotProfile
-    vBotConfigSave("atk")
-  end
-end
-
-if not AttackBotConfig.currentBotProfile or AttackBotConfig.currentBotProfile == 0 or AttackBotConfig.currentBotProfile > 5 then
+if not AttackBotConfig.currentBotProfile or AttackBotConfig.currentBotProfile == 0 or AttackBotConfig.currentBotProfile > 5 then 
   AttackBotConfig.currentBotProfile = 1
 end
-
--- Load character-specific profile on login
-onAddEvent(function()
-  loadCharacterProfile()
-  if ui and ui[AttackBotConfig.currentBotProfile] then
-    setActiveProfile()
-    activeProfileColor()
-    loadSettings()
-  end
-end, 500)
 
 -- create panel UI
 ui = UI.createWidget("AttackBotBotPanel")
@@ -1032,7 +996,7 @@ end
     activeProfileColor()
     loadSettings()
     resetFields()
-    saveCharacterProfile() -- Save profile for current character
+    vBotConfigSave("atk")
   end
 
   for i=1,5 do
@@ -1162,11 +1126,9 @@ end
 
 function executeAttackBotAction(categoryOrPos, idOrFormula, cooldown)
   cooldown = cooldown or 0
-  -- Convert seconds to milliseconds (multiply by 1000)
-  cooldown = cooldown * 1000
   if categoryOrPos == 4 or categoryOrPos == 5 or categoryOrPos == 1 then
     cast(idOrFormula, cooldown)
-  elseif categoryOrPos == 3 then
+  elseif categoryOrPos == 3 then 
     useWith(idOrFormula, target())
   end
 end
@@ -1174,8 +1136,7 @@ end
 -- support function covered, now the main loop
 macro(100, function()
   if not currentSettings.enabled then return end
-  if #currentSettings.attackTable == 0 or isInPz() or not target() then return end
-  -- Removed group cooldown check to allow spell rotation: or modules.game_cooldown.isGroupCooldownIconActive(1)
+  if #currentSettings.attackTable == 0 or isInPz() or not target() or modules.game_cooldown.isGroupCooldownIconActive(1) then return end
 
   if currentSettings.Training and target() and target():getName():lower():find("training") then return end
 
@@ -1239,8 +1200,7 @@ macro(100, function()
     local entry = child.params
     local attackData = entry.itemId > 100 and entry.itemId or entry.spell
     if entry.enabled and manapercent() >= entry.mana then
-      local canCastResult = canCast(entry.spell, not currentSettings.ignoreMana, false)
-      if (type(attackData) == "string" and canCastResult) or (entry.itemId > 100 and (not currentSettings.Visible or findItem(entry.itemId))) then 
+      if (type(attackData) == "string" and canCast(entry.spell, not currentSettings.ignoreMana, not currentSettings.Cooldown)) or (entry.itemId > 100 and (not currentSettings.Visible or findItem(entry.itemId))) then 
         -- first PVP scenario
         if currentSettings.pvpMode and target():getHealthPercent() >= entry.minHp and target():getHealthPercent() <= entry.maxHp and target():canShoot() then
           if entry.category == 2 then

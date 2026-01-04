@@ -146,44 +146,9 @@ if not HealBotConfig[healPanelName] or not HealBotConfig[healPanelName][1] or #H
   }
 end
 
--- Character-specific profile storage
-if not HealBotConfig.characterProfiles then
-  HealBotConfig.characterProfiles = {}
-end
-
--- Load profile for current character or default to 1
-local function loadCharacterProfile()
-  local player = g_game.getLocalPlayer()
-  if player then
-    local charName = player:getName()
-    if HealBotConfig.characterProfiles[charName] then
-      HealBotConfig.currentHealBotProfile = HealBotConfig.characterProfiles[charName]
-    end
-  end
-end
-
--- Save profile for current character
-local function saveCharacterProfile()
-  local player = g_game.getLocalPlayer()
-  if player then
-    local charName = player:getName()
-    HealBotConfig.characterProfiles[charName] = HealBotConfig.currentHealBotProfile
-    vBotConfigSave("heal")
-  end
-end
-
-if not HealBotConfig.currentHealBotProfile or HealBotConfig.currentHealBotProfile == 0 or HealBotConfig.currentHealBotProfile > 5 then
+if not HealBotConfig.currentHealBotProfile or HealBotConfig.currentHealBotProfile == 0 or HealBotConfig.currentHealBotProfile > 5 then 
   HealBotConfig.currentHealBotProfile = 1
 end
-
--- Load character-specific profile on login
-onAddEvent(function()
-  loadCharacterProfile()
-  if ui and ui[HealBotConfig.currentHealBotProfile] then
-    setActiveProfile()
-    activeProfileColor()
-  end
-end, 500)
 
 -- finding correct table, manual unfortunately
 local currentSettings
@@ -503,7 +468,7 @@ if rootWidget then
     setActiveProfile()
     activeProfileColor()
     loadSettings()
-    saveCharacterProfile() -- Save profile for current character
+    vBotConfigSave("heal")
   end
 
   local resetSettings = function()
@@ -585,62 +550,62 @@ macro(100, function()
 
   for _, entry in pairs(currentSettings.spellTable) do
     if entry.enabled and entry.cost < mana() then
-      if canCast(entry.spell, not currentSettings.Conditions, false) then
+      if canCast(entry.spell, not currentSettings.Conditions, not currentSettings.Cooldown) then
         if entry.origin == "HP%" then
           if entry.sign == "=" and hppercent() == entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == ">" and hppercent() >= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == "<" and hppercent() <= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           end
         elseif entry.origin == "HP" then
           if entry.sign == "=" and hp() == entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == ">" and hp() >= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == "<" and hp() <= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           end
         elseif entry.origin == "MP%" then
           if entry.sign == "=" and manapercent() == entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == ">" and manapercent() >= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == "<" and manapercent() <= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           end
         elseif entry.origin == "MP" then
           if entry.sign == "=" and mana() == entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == ">" and mana() >= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == "<" and mana() <= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
-          end
+          end    
         elseif entry.origin == "burst" then
           if entry.sign == "=" and burstDamageValue() == entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == ">" and burstDamageValue() >= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
           elseif entry.sign == "<" and burstDamageValue() <= entry.value then
-            cast(entry.spell, 1000)
+            say(entry.spell)
             return
-          end
+          end    
         end
       else
         somethingIsOnCooldown = true
