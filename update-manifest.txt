@@ -5,14 +5,14 @@
 # Lines starting with # are comments
 
 # Bot files in AppData
-# bot/vBot_4.8/vBot/AttackBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\AttackBot.lua
-# bot/vBot_4.8/vBot/HealBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\HealBot.lua
-# bot/vBot_4.8/vBot/eat_food.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\eat_food.lua
-# bot/vBot_4.8/vBot/hold_target.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\hold_target.lua
-# bot/vBot_4.8/_Loader.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\_Loader.lua
-# bot/vBot_4.8/vBot/main.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\main.lua
-# bot/vBot_4.8/vBot/extras.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\extras.lua
-# bot/vBot_4.8/vBot/equip.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\equip.lua
+bot/vBot_4.8/vBot/AttackBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\AttackBot.lua
+bot/vBot_4.8/vBot/HealBot.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\HealBot.lua
+bot/vBot_4.8/vBot/eat_food.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\eat_food.lua
+bot/vBot_4.8/vBot/hold_target.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\hold_target.lua
+bot/vBot_4.8/_Loader.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\_Loader.lua
+bot/vBot_4.8/vBot/main.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\main.lua
+bot/vBot_4.8/vBot/extras.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\extras.lua
+bot/vBot_4.8/vBot/equip.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\equip.lua
 
 # Launcher files
 MystoviaLauncher-Updater.bat|MystoviaLauncher-Updater.bat
