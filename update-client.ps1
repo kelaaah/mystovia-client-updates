@@ -6,6 +6,16 @@ param(
     [string]$InstallPath = "$env:ProgramFiles\Mystovia"
 )
 
+# Check if running as administrator
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+if (-not $isAdmin) {
+    # Restart as administrator
+    $arguments = "-ExecutionPolicy Bypass -NoProfile -File `"$PSCommandPath`""
+    Start-Process powershell.exe -ArgumentList $arguments -Verb RunAs -Wait
+    exit
+}
+
 Clear-Host
 Write-Host ""
 Write-Host "         MYSTOVIA" -ForegroundColor Cyan
