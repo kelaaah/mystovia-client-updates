@@ -808,6 +808,8 @@ end
       local minHp = panel.minHp:getValue()
       local maxHp = panel.maxHp:getValue()
       local cooldown = panel.cooldown:getValue()
+      -- Convert cooldown from seconds to milliseconds when saving
+      cooldown = cooldown * 1000
       local itemId = panel.itemId:getItemId()
       local spell = panel.spellName:getText()
       local tooltip = monsters ~= true and creatures
@@ -1126,9 +1128,10 @@ end
 
 function executeAttackBotAction(categoryOrPos, idOrFormula, cooldown)
   cooldown = cooldown or 0
+  -- Cooldown is already in milliseconds (converted when added to list)
   if categoryOrPos == 4 or categoryOrPos == 5 or categoryOrPos == 1 then
     cast(idOrFormula, cooldown)
-  elseif categoryOrPos == 3 then 
+  elseif categoryOrPos == 3 then
     useWith(idOrFormula, target())
   end
 end
@@ -1136,7 +1139,8 @@ end
 -- support function covered, now the main loop
 macro(100, function()
   if not currentSettings.enabled then return end
-  if #currentSettings.attackTable == 0 or isInPz() or not target() or modules.game_cooldown.isGroupCooldownIconActive(1) then return end
+  if #currentSettings.attackTable == 0 or isInPz() or not target() then return end
+  -- Removed group cooldown check to allow spell rotation: or modules.game_cooldown.isGroupCooldownIconActive(1)
 
   if currentSettings.Training and target() and target():getName():lower():find("training") then return end
 
@@ -1200,7 +1204,8 @@ macro(100, function()
     local entry = child.params
     local attackData = entry.itemId > 100 and entry.itemId or entry.spell
     if entry.enabled and manapercent() >= entry.mana then
-      if (type(attackData) == "string" and canCast(entry.spell, not currentSettings.ignoreMana, not currentSettings.Cooldown)) or (entry.itemId > 100 and (not currentSettings.Visible or findItem(entry.itemId))) then 
+      local canCastResult = canCast(entry.spell, not currentSettings.ignoreMana, not currentSettings.Cooldown)
+      if (type(attackData) == "string" and canCastResult) or (entry.itemId > 100 and (not currentSettings.Visible or findItem(entry.itemId))) then 
         -- first PVP scenario
         if currentSettings.pvpMode and target():getHealthPercent() >= entry.minHp and target():getHealthPercent() <= entry.maxHp and target():canShoot() then
           if entry.category == 2 then
