@@ -54,13 +54,17 @@ TargetBot.Creature.attack = function(params, targets, isLooting) -- params {conf
 
   local config = params.config
   local creature = params.creature
-  
+
   if g_game.getAttackingCreature() ~= creature then
     g_game.attack(creature)
   end
 
   if not isLooting then -- walk only when not looting
     TargetBot.Creature.walk(creature, config, targets)
+    -- Re-attack after walking to ensure server updates attack state
+    if g_game.getAttackingCreature() ~= creature then
+      g_game.attack(creature)
+    end
   end
 
   -- attacks

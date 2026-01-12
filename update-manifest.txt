@@ -13,6 +13,7 @@ bot/vBot_4.8/_Loader.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\_Loader.lua
 bot/vBot_4.8/vBot/main.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\main.lua
 bot/vBot_4.8/vBot/extras.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\extras.lua
 bot/vBot_4.8/vBot/equip.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\vBot\equip.lua
+bot/vBot_4.8/targetbot/creature_attack.lua|APPDATA\OTClientV8\mystovia\bot\vBot_4.8\targetbot\creature_attack.lua
 
 # Launcher files
 MystoviaLauncher-Updater.bat|MystoviaLauncher-Updater.bat
