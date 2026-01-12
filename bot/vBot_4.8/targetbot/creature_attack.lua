@@ -1,11 +1,16 @@
 local targetBotLure = false
-local targetCount = 0 
+local targetCount = 0
 local delayValue = 0
 local lureMax = 0
 local anchorPosition = nil
 local lastCall = now
 local delayFrom = nil
 local dynamicLureDelay = false
+
+-- Anti-stuck: track attack time and auto-cancel if stuck
+local lastAttackedCreatureId = nil
+local attackStartTime = 0
+local MAX_ATTACK_TIME = 30000 -- 30 seconds
 
 function getWalkableTilesCount(position)
   local count = 0
@@ -54,6 +59,26 @@ TargetBot.Creature.attack = function(params, targets, isLooting) -- params {conf
 
   local config = params.config
   local creature = params.creature
+  local creatureId = creature:getId()
+
+  -- Anti-stuck: check if attacking same creature for too long
+  if g_game.isAttacking() then
+    if creatureId ~= lastAttackedCreatureId then
+      -- New target, reset timer
+      lastAttackedCreatureId = creatureId
+      attackStartTime = now
+    elseif now - attackStartTime > MAX_ATTACK_TIME then
+      -- Been attacking same creature for too long, cancel to allow retarget
+      g_game.cancelAttack()
+      lastAttackedCreatureId = nil
+      attackStartTime = 0
+      return
+    end
+  else
+    -- Not attacking, reset timer
+    lastAttackedCreatureId = nil
+    attackStartTime = 0
+  end
 
   if g_game.getAttackingCreature() ~= creature then
     g_game.attack(creature)
@@ -61,10 +86,6 @@ TargetBot.Creature.attack = function(params, targets, isLooting) -- params {conf
 
   if not isLooting then -- walk only when not looting
     TargetBot.Creature.walk(creature, config, targets)
-    -- Re-attack after walking to ensure server updates attack state
-    if g_game.getAttackingCreature() ~= creature then
-      g_game.attack(creature)
-    end
   end
 
   -- attacks

@@ -49,8 +49,11 @@ function UIItem:onDrop(widget, mousePos, forced)
          not container.lootContainer then
 
         local items = container:getItems()
+        -- Find existing stack with space, but exclude the item being moved
         for i, targetItem in ipairs(items) do
-          if targetItem:getId() == item:getId() and targetItem:getCount() < 100 then
+          if targetItem:getId() == item:getId() and
+             targetItem:getCount() < 100 and
+             targetItem ~= item then
             -- Found existing stack with space, redirect to it
             toPos = container:getSlotPosition(i - 1)
             break
