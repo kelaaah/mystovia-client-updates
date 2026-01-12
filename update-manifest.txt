@@ -25,7 +25,10 @@ client/modules/game_bot/bot.otui|client\modules\game_bot\bot.otui
 client/modules/corelib/ui/uispinbox.lua|client\modules\corelib\ui\uispinbox.lua
 client/modules/gamelib/ui/uiitem.lua|client\modules\gamelib\ui\uiitem.lua
 client/modules/game_console/console.lua|client\modules\game_console\console.lua
+client/modules/game_minimap/minimap.lua|client\modules\game_minimap\minimap.lua
 client/init.lua|client\init.lua
 
-# Things folder (add your files here)
-# Example: client/things/860/somefile.dat|client\things\860\somefile.dat
+# Things folder - client assets (sprites, data files)
+client/data/things/860/Tibia.dat|client\data\things\860\Tibia.dat
+client/data/things/860/Tibia.spr|client\data\things\860\Tibia.spr
+client/data/things/860/Tibia.otfi|client\data\things\860\Tibia.otfi

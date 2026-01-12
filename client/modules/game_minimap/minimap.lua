@@ -97,34 +97,36 @@ function offline()
 end
 
 function loadMap()
-  local clientVersion = g_game.getClientVersion()
+  -- Use a single shared minimap file for all characters
+  local minimapFile = '/minimap_shared.otmm'
 
-  g_minimap.clean()
-  loaded = false
-
-  local minimapFile = '/minimap.otmm'
-  local dataMinimapFile = '/data' .. minimapFile
-  local versionedMinimapFile = '/minimap' .. clientVersion .. '.otmm'
-  if g_resources.fileExists(dataMinimapFile) then
-    loaded = g_minimap.loadOtmm(dataMinimapFile)
-  end
-  if not loaded and g_resources.fileExists(versionedMinimapFile) then
-    loaded = g_minimap.loadOtmm(versionedMinimapFile)
-  end
-  if not loaded and g_resources.fileExists(minimapFile) then
-    loaded = g_minimap.loadOtmm(minimapFile)
-  end
+  -- NEVER clean the minimap - we want to keep all explored areas
+  -- Only load from file once when the module initializes
   if not loaded then
-    print("Minimap couldn't be loaded, file missing?")
+    if g_resources.fileExists(minimapFile) then
+      loaded = g_minimap.loadOtmm(minimapFile)
+      if loaded then
+        print("Minimap loaded from: " .. minimapFile)
+      end
+    else
+      print("No saved minimap found, starting fresh")
+      loaded = true
+    end
   end
+
   minimapWidget:load()
 end
 
 function saveMap()
-  local clientVersion = g_game.getClientVersion()
-  local minimapFile = '/minimap' .. clientVersion .. '.otmm' 
-  g_minimap.saveOtmm(minimapFile)
+  -- Always save to shared minimap file
+  local minimapFile = '/minimap_shared.otmm'
+  local success = g_minimap.saveOtmm(minimapFile)
   minimapWidget:save()
+  if success then
+    print("Minimap saved successfully to: " .. minimapFile)
+  else
+    print("ERROR: Failed to save minimap!")
+  end
 end
 
 function updateCameraPosition()
