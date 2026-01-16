@@ -1,0 +1,75 @@
+ManaTrainingPanel < Panel
+  height: 21
+
+  BotSwitch
+    id: title
+    anchors.top: parent.top
+    anchors.left: parent.left
+    text-align: center
+    width: 130
+    !text: tr('Mana Training')
+
+  Button
+    id: settings
+    anchors.top: prev.top
+    anchors.left: prev.right
+    anchors.right: parent.right
+    margin-left: 3
+    height: 17
+    text: Setup
+
+ManaTrainingWindow < MainWindow
+  size: 300 130
+  padding: 15
+  text: Mana Training
+  @onEscape: self:hide()
+
+  Label
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin-top: 10
+    text: Spell:
+    font: verdana-11px-rounded
+
+  TextEdit
+    id: spellName
+    anchors.verticalCenter: prev.verticalCenter
+    anchors.left: prev.right
+    anchors.right: parent.right
+    margin-left: 10
+    height: 17
+    font: cipsoftFont
+
+  Label
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 15
+    text: Interval (seconds):
+    font: verdana-11px-rounded
+
+  SpinBox
+    id: interval
+    anchors.verticalCenter: prev.verticalCenter
+    anchors.left: prev.right
+    margin-left: 10
+    size: 50 17
+    minimum: 1
+    maximum: 3600
+    step: 1
+    value: 2
+    editable: true
+    focusable: true
+
+  HorizontalSeparator
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: closeButton.top
+    margin-bottom: 10
+
+  Button
+    id: closeButton
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    size: 45 21
+    text: Close
+    font: cipsoftFont
