@@ -752,7 +752,8 @@ end
         panel.creatures:setValue(params.count)
         panel.minHp:setValue(params.minHp)
         panel.maxHp:setValue(params.maxHp)
-        panel.cooldown:setValue(params.cooldown)
+        -- Convert cooldown from milliseconds back to seconds for display
+        panel.cooldown:setValue(math.floor(params.cooldown / 1000))
         showItem = params.itemId > 100 and true or false
         panel.itemId:setItemId(params.itemId)
         panel.spellName:setText(params.spell or "")
@@ -1053,6 +1054,21 @@ end
 
 
 -- otui covered, now support functions
+
+-- Individual spell cooldown tracking
+local spellCooldowns = {}
+
+function isSpellOnCooldown(spellKey, cooldownMs)
+  if cooldownMs <= 0 then return false end
+  local lastCast = spellCooldowns[spellKey]
+  if not lastCast then return false end
+  return (now - lastCast) < cooldownMs
+end
+
+function setSpellCooldown(spellKey)
+  spellCooldowns[spellKey] = now
+end
+
 function getPattern(category, pattern, safe)
   safe = safe and 2 or 1
 
@@ -1126,11 +1142,15 @@ function getBestTileByPattern(pattern, minHp, maxHp, safePattern, monsterNamesTa
   return targetTile.amount > 0 and targetTile or false
 end
 
-function executeAttackBotAction(categoryOrPos, idOrFormula, cooldown)
-  cooldown = cooldown or 0
-  -- Cooldown is already in milliseconds (converted when added to list)
+function executeAttackBotAction(categoryOrPos, idOrFormula, cooldown, spellKey)
+  -- Set individual spell cooldown if spellKey provided
+  if spellKey then
+    setSpellCooldown(spellKey)
+  end
+
+  -- Cast spell without global cooldown delay (let individual tracking handle it)
   if categoryOrPos == 4 or categoryOrPos == 5 or categoryOrPos == 1 then
-    cast(idOrFormula, cooldown)
+    cast(idOrFormula, 0)
   elseif categoryOrPos == 3 then
     useWith(idOrFormula, target())
   end
@@ -1203,28 +1223,32 @@ macro(100, function()
   for i, child in ipairs(panel.entryList:getChildren()) do
     local entry = child.params
     local attackData = entry.itemId > 100 and entry.itemId or entry.spell
-    if entry.enabled and manapercent() >= entry.mana then
+    -- Create unique key for this spell entry (spell/item + category + pattern)
+    local spellKey = tostring(attackData) .. "_" .. entry.category .. "_" .. entry.pattern
+
+    -- Check individual cooldown first
+    if entry.enabled and manapercent() >= entry.mana and not isSpellOnCooldown(spellKey, entry.cooldown) then
       local canCastResult = canCast(entry.spell, not currentSettings.ignoreMana, not currentSettings.Cooldown)
-      if (type(attackData) == "string" and canCastResult) or (entry.itemId > 100 and (not currentSettings.Visible or findItem(entry.itemId))) then 
+      if (type(attackData) == "string" and canCastResult) or (entry.itemId > 100 and (not currentSettings.Visible or findItem(entry.itemId))) then
         -- first PVP scenario
         if currentSettings.pvpMode and target():getHealthPercent() >= entry.minHp and target():getHealthPercent() <= entry.maxHp and target():canShoot() then
           if entry.category == 2 then
             return warn("[AttackBot] Area Runes cannot be used in PVP situation!")
           else
-            return executeAttackBotAction(entry.category, attackData, entry.cooldown)
+            return executeAttackBotAction(entry.category, attackData, entry.cooldown, spellKey)
           end
         end
         -- empowerment
         if entry.category == 4 and not isBuffed() then
           local monsterAmount = getMonstersInArea(entry.category, nil, nil, entry.minHp, entry.maxHp, false, entry.monsters)
           if (entry.orMore and monsterAmount >= entry.count or not entry.orMore and monsterAmount == entry.count) and distanceFromPlayer(target():getPosition()) <= entry.pattern then
-            return executeAttackBotAction(entry.category, attackData, entry.cooldown)
+            return executeAttackBotAction(entry.category, attackData, entry.cooldown, spellKey)
           end
         --
         elseif entry.category == 1 or entry.category == 3 then
           local monsterAmount = getMonstersInArea(entry.category, nil, nil, entry.minHp, entry.maxHp, false, entry.monsters)
           if (entry.orMore and monsterAmount >= entry.count or not entry.orMore and monsterAmount == entry.count) and distanceFromPlayer(target():getPosition()) <= entry.pattern then
-            return executeAttackBotAction(entry.category, attackData, entry.cooldown)
+            return executeAttackBotAction(entry.category, attackData, entry.cooldown, spellKey)
           end
         elseif entry.category == 5 then
           local pCat = entry.patternCategory
@@ -1234,7 +1258,7 @@ macro(100, function()
           local monsterAmount = pCat ~= 8 and getMonstersInArea(entry.category, anchorParam, spellPatterns[pCat][entry.pattern][1], entry.minHp, entry.maxHp, safe, entry.monsters)
           if (pattern ~= 8 and (entry.orMore and monsterAmount >= entry.count or not entry.orMore and monsterAmount == entry.count)) or (pattern == 8 and bestSide >= entry.count and (not currentSettings.PvpSafe or getPlayers(2) == 0)) then
             if (not currentSettings.BlackListSafe or not isBlackListedPlayerInRange(currentSettings.AntiRsRange)) and (not currentSettings.Kills or killsToRs() > currentSettings.KillsAmount) then
-              return executeAttackBotAction(entry.category, attackData, entry.cooldown)
+              return executeAttackBotAction(entry.category, attackData, entry.cooldown, spellKey)
             end
           end
         elseif entry.category == 2 then
@@ -1249,6 +1273,7 @@ macro(100, function()
           end
           if monsterAmount and (entry.orMore and monsterAmount >= entry.count or not entry.orMore and monsterAmount == entry.count) then
             if (not currentSettings.BlackListSafe or not isBlackListedPlayerInRange(currentSettings.AntiRsRange)) and (not currentSettings.Kills or killsToRs() > currentSettings.KillsAmount) then
+              setSpellCooldown(spellKey) -- Set cooldown for runes too
               return useWith(attackData, g_map.getTile(pos):getTopUseThing())
             end
           end
